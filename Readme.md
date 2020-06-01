@@ -13,3 +13,10 @@ To do so, e.g. install the following git pre-commit hook to enable clean code.
       echo "The pylint rating did not meet expected values."
       exit 1
     fi
+
+
+## Requirements
+
+Please refer to the `requirements.txt` or simply install them
+
+    >>> pip install -r requirements.txt

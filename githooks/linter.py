@@ -57,6 +57,8 @@ def main():
 
     git = Git()
     files = git.get_staged_modules()
+    if not files:
+        return 0  # No Python module to get lint.
 
     ratings = []
     linter = Linter()
