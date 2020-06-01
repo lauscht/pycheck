@@ -1,18 +1,28 @@
+"""
+# GitWrap
+
+Wrapper for commonly used git methods.
+
+"""
 import re
 import os
-from .execution import Exec
+from githooks.execution import Exec
 
 
 class Git:
+    """ A simple wrapper to some commonly used git-methods. """
 
     def __init__(self):
-        self._re_get_changed_files_cmd = re.compile(r"[MA][\s+](.*[\.py])[\n$]?")
+        self._re_get_changed_modules = re.compile(r"[MA][\s+](.*\.py)[\n$]?")
 
-    def root(self):
+    @staticmethod
+    def root():
+        """ get the root folder of a git repository. """
         result = Exec("git rev-parse --show-toplevel").result()
         return result.stdout.strip()
 
-    def last_commit(self):
+    @staticmethod
+    def last_commit():
         """ Retrieves last git hash """
         result = Exec("git rev-parse --verify HEAD").result()
         assert result.status == 0
@@ -25,11 +35,11 @@ class Git:
         return result.stdout.strip()
 
     def get_staged_modules(self):
+        """ :returns (list) with all staged python modules. """
         lines = self.diff_index()
-        files = list(self._re_get_changed_files_cmd.findall(lines))
+        files = list(self._re_get_changed_modules.findall(lines))
         if not files:
             return []
 
         root = self.root()
         return [os.path.join(root, f) for f in files]
-
