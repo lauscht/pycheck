@@ -1,3 +1,16 @@
+#!/usr/bin/python
+"""
+Linter -  a small pylint wrapper
+
+It may analyze staged changes of your git repository to check on code style.
+
+    >>> python -m githooks.linter  --warn -minimum 10
+    Your code was rated in average 9.5/10 with at least 8.49/10
+
+For help run:
+    >>> python -m githooks.linter --help
+
+"""
 import os
 import re
 import logging
@@ -7,15 +20,18 @@ from githooks.gitwrap import Git
 
 
 class Linter:
-
+    """ Wrapper for pylints report module. """
     def __init__(self):
         self._re_rating = re.compile(r"at ([\d\.]+)/10")
 
-    def create_report(self, file):
+    @staticmethod
+    def create_report(file):
+        """ Get Stdout from pylint report of a file """
         result = Exec("python -m pylint")(file)
         return result.stdout
 
     def extract_rating(self, lint_report):
+        """ Exctract rating from a pylint report """
         ratings = self._re_rating.findall(lint_report)
         try:
             return float(ratings[0])
@@ -23,13 +39,15 @@ class Linter:
             return 0
 
     def rating(self, file):
+        """ Get the pylint rating of a file. """
         lint_report = self.create_report(file)
         return self.extract_rating(lint_report)
 
 
 def main():
+    """ run this method to extract pylint report from your code. """
     parser = argparse.ArgumentParser()
-    parser.add_argument('-minimum', default=9, type=float, nargs='?')
+    parser.add_argument('-minimum', default=10, type=float, nargs='?')
     parser.add_argument('--warn', action='store_true')
     parser.add_argument('-v', action='store_true')
     parser.add_argument('--disable_summary', action='store_true')
@@ -45,7 +63,7 @@ def main():
 
     for file in files:
         if not os.path.exists(file):
-            logging.warning("Missing file {file}".format(file=file))
+            logging.warning("Missing file %s", file)
             continue
 
         report = linter.create_report(file)
