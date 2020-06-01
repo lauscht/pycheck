@@ -2,9 +2,8 @@
 
 ## Linter
 In order to evaluate your python style consider a least pylint rating.
-To do so, e.g. install the following git pre-commit hook to enable clean code.
-
-    .git/hook/pre-commit
+To do so, e.g add the following lines to your repositories or globel git pre-commit hooks.
+You find them in `.git/hook/pre-commit`
 
     #!/bin/sh
     python -m githooks.linter --warn -minimum 10
