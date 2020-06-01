@@ -29,7 +29,7 @@ class Linter:
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-minimum', default=9, nargs='?')
+    parser.add_argument('-minimum', default=9, type=float, nargs='?')
     parser.add_argument('--warn', action='store_true')
     parser.add_argument('-v', action='store_true')
     parser.add_argument('--disable_summary', action='store_true')
@@ -39,9 +39,10 @@ def main():
 
     git = Git()
     files = git.get_staged_modules()
-    linter = Linter()
 
     ratings = []
+    linter = Linter()
+
     for file in files:
         if not os.path.exists(file):
             logging.warning("Missing file {file}".format(file=file))
