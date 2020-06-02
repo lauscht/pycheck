@@ -7,11 +7,6 @@ import difflib
 
 def equality(source=None, target=None, verbose=False):
     """ :returns percentage of source lines in target. """
-    parser = argparse.ArgumentParser()
-    parser.add_argument('source', type=str, default=source)
-    parser.add_argument('target', type=str, default=target)
-    parser.add_argument('--v', type=bool, default=verbose, nargs='?')
-    args = parser.parse_args()
 
     def get_lines(file):
         if not os.path.exists(file):
@@ -44,4 +39,11 @@ def equality(source=None, target=None, verbose=False):
 
 
 if __name__ == '__main__':
-    equality(verbose=True)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('source', type=str)
+    parser.add_argument('target', type=str)
+    args = parser.parse_args()
+
+    equality(source=args.source,
+             target=args.target,
+             verbose=True)
