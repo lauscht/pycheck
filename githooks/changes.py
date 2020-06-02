@@ -16,9 +16,8 @@ def equality(source=None, target=None, verbose=False):
         with open(file, 'r') as handle:
             return handle.readlines()
 
-
-    sources = get_lines(args.source)
-    target = get_lines(args.target)
+    sources = get_lines(source)
+    target = get_lines(target)
 
     differ = difflib.Differ()
     result = differ.compare(sources, target)
@@ -27,9 +26,9 @@ def equality(source=None, target=None, verbose=False):
     amount_origin = len(sources) - len(removed)
 
     percent_of_source = amount_origin/len(target)*100
-    if args.v:
+    if verbose:
         added = [line for line in result if line.startswith('+')]
-        print("Compared {args.source} to {args.target}".format(args=args))
+        print("Compared {source} to {target}".format(source=source, target=target))
         print(f"{amount_origin} source lines comprise target"
               f" {len(target)} lines ({percent_of_source:.2f} %%)")
         print(f"removed {len(removed)} / {len(sources)}")

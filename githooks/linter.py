@@ -38,6 +38,15 @@ class Linter:
         except IndexError:
             return 0
 
+    @staticmethod
+    def clean_report(report):
+        """ Remove uneccessary lines from pylint report """
+        lines = report.split('\n')
+        lines = [line.strip() for line in lines if not line.startswith('*')]
+        lines = [line for line in lines if not line.startswith('-')]
+        lines = [line for line in lines if not line == ""]
+        return "\n".join(lines[:-1])
+
     def rating(self, file):
         """ Get the pylint rating of a file. """
         lint_report = self.create_report(file)
@@ -50,6 +59,7 @@ def main():
     parser.add_argument('-minimum', default=10, type=float, nargs='?')
     parser.add_argument('--warn', action='store_true')
     parser.add_argument('-v', action='store_true')
+    parser.add_argument('-vv', action='store_true')
     parser.add_argument('--disable_summary', action='store_true')
 
     args = parser.parse_args()
@@ -73,12 +83,15 @@ def main():
         ratings.append((rating))
         if rating < least_expected_rating:
             if args.warn or args.v:
-                print("{file}: {rating}".format(file=file, rating=rating))
-            if args.v:
+                print("{file}: {rating} / 10".format(file=file, rating=rating))
+
+            if args.vv:
                 print(report)
+            elif args.v:
+                print(linter.clean_report(report))
 
     if not args.disable_summary:
-        print("Your code was rated in average {avg:.2f}/10 with at least {min:.2f}/10".format(
+        print("Your code has been rated in average {avg:.2f}/10 with at least {min:.2f}/10".format(
             avg=(sum(ratings) / len(ratings)), min=min(ratings)
         ))
 
